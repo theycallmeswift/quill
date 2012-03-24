@@ -1,0 +1,16 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Foobar</title>
+  </head>
+  <body>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+      var socket = io.connect('/');
+      socket.on('connected', function(data) {
+        console.log("Got data");
+        console.log(data);
+      });
+    </script>
+  </body>
+</html>

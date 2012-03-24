@@ -1,0 +1,23 @@
+{
+  "author": [
+    "Mike Swift <theycallmeswift@gmail.com> (http://theycallmeswift.com)",
+    "Ian Jennings <ian@meetjennings.com> (http://meetjennings.com)"
+  ],
+  "name": "hackny-2012-project",
+  "description": "This is our project",
+  "version": "0.0.0",
+  "homepage": "http://hackny.org/",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/theycallmeswift/hackny-spring-2012-project.git"
+  },
+  "scripts": {
+    "test": "test"
+  },
+  "engines": {
+    "node": "~0.6.9"
+  },
+  "dependencies": {},
+  "devDependencies": {},
+  "optionalDependencies": {}
+}
