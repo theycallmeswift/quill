@@ -4,10 +4,32 @@ var http   = require('http')
   , static = require('node-static')
   , util   = require('util')
   , config = require('./config.json')
-
-console.log(config);
+  , colors = require('colors')
 
 var fileServer = new static.Server('./themes/barebones');
+
+var debugError = function(errorMessage, data){
+  if (config.development) {
+    console.log('################ ERROR ##################'.red);
+    console.log(errorMessage);
+    if(data) {
+      console.log(data);
+    }
+    console.log('################ ERROR ##################'.red);
+  }
+}
+
+var bigQuill = function() {
+  console.log('');
+  console.log('                       _/  _/  _/'.green);
+  console.log('    _/_/_/  _/    _/      _/  _/ '.green);
+  console.log(' _/    _/  _/    _/  _/  _/  _/'.green);
+  console.log('_/    _/  _/    _/  _/  _/  _/'.green);
+  console.log(' _/_/_/    _/_/_/  _/  _/  _/'.green);
+  console.log('    _/'.green);
+  console.log('   _/'.green);
+  console.log('');
+}
 
 var app = http.createServer(function(request, response) {
   util.log("Incomming request: " + request.url);
@@ -15,7 +37,7 @@ var app = http.createServer(function(request, response) {
     // Treat all other requests as static file requests.
     fileServer.serve(request, response, function (err, result) {
       if (err) {
-        util.log("Error serving " + request.url + " - " + err.message);
+        debugError("Error serving " + request.url, err);
 
         response.writeHead(err.status, err.headers);
         response.end();
@@ -28,13 +50,13 @@ var app = http.createServer(function(request, response) {
 var sioApp = sio.listen(app);
 
 sioApp.sockets.on('connection', function(socket) {
-  debugger
   util.log("New socket connection");
   socket.emit('connected');
 });
 
 
 app.on('listening', function() {
+  bigQuill();
   util.log('Server listening on 0.0.0.0:8000');
 });
 
