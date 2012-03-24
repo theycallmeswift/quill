@@ -5,8 +5,7 @@ var http   = require('http')
   , util   = require('util')
   , config = require('./config.json')
   , colors = require('colors')
-
-var fileServer = new static.Server('./themes/barebones');
+  , mu = require('mu2')
 
 var debugError = function(errorMessage, data){
   if (config.development) {
@@ -31,20 +30,13 @@ var bigQuill = function() {
   console.log('');
 }
 
-var app = http.createServer(function(request, response) {
-  util.log("Incomming request: " + request.url);
-  request.addListener('end', function () {
-    // Treat all other requests as static file requests.
-    fileServer.serve(request, response, function (err, result) {
-      if (err) {
-        debugError("Error serving " + request.url, err);
-
-        response.writeHead(err.status, err.headers);
-        response.end();
-        return;
-      }
-    });
-  });
+mu.root = __dirname + '/themes/' + config.theme;
+var app = http.createServer(function(req, res) {
+  if (config.development) {
+    mu.clearCache();
+  }
+  var stream = mu.compileAndRender('index.html', {name: "john"});
+  util.pump(stream, res);
 });
 
 var sioApp = sio.listen(app);
