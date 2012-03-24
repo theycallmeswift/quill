@@ -2,9 +2,12 @@ var http   = require('http')
   , marked = require('marked')
   , sio    = require('socket.io')
   , static = require('node-static')
-  , util   = require('util');
+  , util   = require('util')
+  , config = require('./config.json')
 
-var fileServer = new static.Server('./public');
+console.log(config);
+
+var fileServer = new static.Server('./themes/barebones');
 
 var app = http.createServer(function(request, response) {
   util.log("Incomming request: " + request.url);
