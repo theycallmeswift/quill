@@ -3,21 +3,21 @@
     "Mike Swift <theycallmeswift@gmail.com> (http://theycallmeswift.com)",
     "Ian Jennings <ian@meetjennings.com> (http://meetjennings.com)"
   ],
-  "name": "hackny-2012-project",
-  "description": "This is our project",
+  "name": "quill",
+  "description": "A realtime git backed blogging engine for node.js",
   "version": "0.0.0",
-  "homepage": "http://hackny.org/",
+  "homepage": "http://justquillin.com/",
   "repository": {
     "type": "git",
-    "url": "git://github.com/theycallmeswift/hackny-spring-2012-project.git"
-  },
-  "scripts": {
-    "test": "test"
+    "url": "git@github.com:theycallmeswift/quill.git"
   },
   "engines": {
     "node": "~0.6.9"
   },
-  "dependencies": {},
-  "devDependencies": {},
-  "optionalDependencies": {}
+  "dependencies": {
+    "marked": "0.5.9",
+    "node-static": "0.5.9",
+    "socket.io": "0.9.2"
+  },
+  "devDependencies": {}
 }
