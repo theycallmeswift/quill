@@ -1,6 +1,9 @@
 var fs   = require('fs')
   , path = require('path');
 
+var createSiteDirectory = function() {};
+var copyAssets = function() {};
+
 /**
  * findPosts
  *
@@ -44,13 +47,42 @@ var findPosts = function(postsDir, callback) {
   });
 };
 
-var compile = function(postsDir, callback) {
-  findPosts(postsDir, function(err, files) {
+var compile = function(postsDir, themeDir, callback) {
+  var completeFunctionCounter = 0
+    , files
+    , siteDirectory = path.join(__dirname, '..', '_site');
+
+  var continueCompilation = function() {
+    if(completeFunctionCounter == 2) {
+      console.log("Generating HTML files");
+      return generateHTMLFiles(files, template, callback);
+    }
+    console.log("Not generating HTML files");
+  };
+
+  createSiteDirectory(siteDirectory, function(err) {
     if(err) {
       return callback(err);
     }
 
-    console.log(files);
+    copyAssets(themeDir, siteDir, function() {
+      if(err) {
+        return callback(err);
+      }
+
+      completeFunctionCounter += 1;
+      continueCompilation();
+    });
+  });
+
+  findPosts(postsDir, function(err, result) {
+    if(err) {
+      return callback(err);
+    }
+    files = result;
+
+    completeFunctionCounter += 1;
+    continueCompilation();
   });
 };
 

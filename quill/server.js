@@ -31,10 +31,14 @@ var bigQuill = function() {
   console.log('');
 }
 
+var themeDir = path.join(__dirname, '..', 'themes', config.theme);
 var postsDir = path.join(__dirname, '..', 'posts');
-compiler.compile(postsDir);
 
-mu.root = path.join(__dirname, 'themes', config.theme);
+compiler.compile(postsDir, themeDir, function() {
+  console.log("Site successfully compiled into _site");
+});
+
+mu.root = path.join(__dirname, '..', 'themes', config.theme);
 var app = http.createServer(function(req, res) {
   if (config.development) {
     mu.clearCache();
