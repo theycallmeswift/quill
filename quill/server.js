@@ -1,12 +1,14 @@
 var colors = require('colors')
   , compiler = require('./compiler')
   , config = require('../config.json')
+  , pack = require('../package.json')
   , http   = require('http')
   , path   = require('path')
   , sio    = require('socket.io')
   , static = require('node-static')
   , util   = require('util')
-  , colors = require('colors');
+  , colors = require('colors')
+  , intro = require('./intro');
 
 var debugError = function(errorMessage, data){
   if (config.development) {
@@ -46,20 +48,16 @@ compiler.compile(postsDir, themeDir, config, function(err) {
   });
 
   app.on('listening', function() {
+    intro();
     console.log('');
-    console.log('                         _/  _/  _/'.cyan);
-    console.log('      _/_/_/  _/    _/      _/  _/ '.cyan);
-    console.log('   _/    _/  _/    _/  _/  _/  _/'.cyan);
-    console.log('  _/    _/  _/    _/  _/  _/  _/'.cyan);
-    console.log('   _/_/_/    _/_/_/  _/  _/  _/'.cyan);
-    console.log('      _/'.cyan);
-    console.log('     _/'.cyan + '    blogging for hackers'.green);
-    console.log('');
-    console.log('  v0.0.1'.yellow);
-    console.log('  a ' + 'HackNY'.red + ' hack');
+    console.log('v'.yellow + String(pack.version).yellow);
+    for(var a in pack.author){
+      console.log(pack.author[a].cyan);
+    }
+    console.log('a ' + 'HackNY'.red + ' hack');
     console.log('');
     console.log('-------------------------------------');
-    console.log('  Using theme ' + String(config.theme).cyan);
+    console.log('Theme: ' + String(config.theme).cyan);
     console.log('-------------------------------------')
     console.log('Starting server on port 8000');
   });
