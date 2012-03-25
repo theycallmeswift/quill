@@ -1,23 +1,8 @@
-var fs     = require('fs')
-  , mu     = require('mu2')
+var cons   = require('consolidate')
+  , fs     = require('fs')
   , path   = require('path')
   , util   = require('util')
   , wrench = require('wrench');
-
-/**
-  * after
-  *
-  * execute a callback after being called X times.
-  *
-  * @param Int times Number of times function has to be called
-  * @param Function func Function to call
-  */
-var after = function(times, func) {
-  if (times <= 0) return func();
-  return function() {
-    if (--times < 1) { return func.apply(this, arguments); }
-  };
-};
 
 /**
  * copyAssets
@@ -113,47 +98,59 @@ var findPosts = function(postsDir, callback) {
 };
 
 var generateHTMLFiles = function(files, layout, outputDir, callback) {
-  var compileCompleted
+  var counter = 0
+    , compileCompleted
     , layoutHTML
     , file
     , fileStream
     , outputFilename;
 
-  compileCompleted = after(files.length, function() {
-    console.log("All files have been compiled");
-    callback();
-  });
 
-  console.log("Generating HTML files");
-  console.log(files);
+  var compileCompleted = function() {
+    counter += 1;
+    if(counter == files.length) {
+      util.log("Generating static HTML files");
+      callback();
+    }
+  };
 
   for(var key in files) {
     file = files[key];
     fs.readFile(file.path, function(err, data) {
-      console.log("here");
       if(err) {
         return callback(err);
       }
 
-      templateStream = mu.compileAndRender(layout, {content: data});
-      outputFilename = path.join(outputDir, file.url);
-      fileStream = fs.createWriteStream(outputFilename);
+      cons.whiskers(layout, { config: {}, content: data.toString() }, function(err, html) {
+        if(err) {
+          return callback(err);
+        }
 
-      util.pump(templateStream, fileStream)
-      compileCompleted()
+        outputFilename = path.join(outputDir, file.url);
+        var fileRes = fs.writeFile(outputFilename, html, function(err) {
+          if(err) {
+            return callback(err);
+          }
+          compileCompleted();
+        });
+      });
     });
   }
 };
 
 var compile = function(postsDir, themeDir, callback) {
-  var files
+  var counter = 0
+    , files
     , siteDirectory = path.join(__dirname, '..', '_site')
     , layout = path.join(themeDir, 'index.html');
 
-  var continueCompilation = after(2, function() {
-    util.log("Generating static HTML files");
-    generateHTMLFiles(files, layout, siteDirectory, callback);
-  });
+  var continueCompilation = function() {
+    counter += 1;
+    if(counter == 2) {
+      util.log("Generating static HTML files");
+      generateHTMLFiles(files, layout, siteDirectory, callback);
+    }
+  };
 
   createSiteDirectory(siteDirectory, function(err) {
     if(err) {
