@@ -11,7 +11,9 @@
     "type": "git",
     "url": "git@github.com:theycallmeswift/quill.git"
   },
-  "bin": { "quill": "./bin/quill" },
+  "bin": {
+    "quill": "./bin/quill"
+  },
   "engines": {
     "node": "~0.6.9"
   },
