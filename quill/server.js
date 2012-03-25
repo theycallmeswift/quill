@@ -3,7 +3,7 @@ var http   = require('http')
   , sio    = require('socket.io')
   , static = require('node-static')
   , util   = require('util')
-  , config = require('./config.json')
+  , config = require('../config.json')
   , colors = require('colors')
   , mu = require('mu2')
 
