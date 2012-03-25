@@ -22,29 +22,38 @@ var postsDir = path.join(__dirname, '..', 'posts');
 
 compiler.compile(postsDir, themeDir, function() {
   console.log("Site successfully compiled into _site");
+
+  var filePath = path.join(__dirname, '..', 'themes', 'obviovs');
+  var fileServer = new static.Server(filePath);
+
+  var app = http.createServer(function(req, res) {
+    req.addListener('end', function () {
+      // Treat all other requests as static file requests.
+      fileServer.serve(req, res, function (err, result) {
+        if (err) {
+          util.log("Error serving " + req.url + " - " + err.message);
+
+          res.writeHead(err.status, err.headers);
+          res.end();
+          return;
+        }
+      });
+    });
+  });
+
+  app.on('listening', function() {
+    console.log('');
+    console.log('                       _/  _/  _/'.green);
+    console.log('    _/_/_/  _/    _/      _/  _/ '.green);
+    console.log(' _/    _/  _/    _/  _/  _/  _/'.green);
+    console.log('_/    _/  _/    _/  _/  _/  _/'.green);
+    console.log(' _/_/_/    _/_/_/  _/  _/  _/'.green);
+    console.log('    _/'.green);
+    console.log('   _/'.green);
+    console.log('');
+    util.log('Server listening on 0.0.0.0:8000');
+  });
+
+
+  app.listen(8000);
 });
-
-var app = http.createServer(function(req, res) {
-});
-
-var sioApp = sio.listen(app);
-
-sioApp.sockets.on('connection', function(socket) {
-  util.log("New socket connection");
-  socket.emit('connected');
-});
-
-app.on('listening', function() {
-  console.log('');
-  console.log('                         _/  _/  _/'.green);
-  console.log('      _/_/_/  _/    _/      _/  _/ '.green);
-  console.log('   _/    _/  _/    _/  _/  _/  _/'.green);
-  console.log('  _/    _/  _/    _/  _/  _/  _/'.green);
-  console.log('   _/_/_/    _/_/_/  _/  _/  _/'.green);
-  console.log('      _/'.green);
-  console.log('     _/'.green);
-  console.log('');
-  util.log('Server listening on 0.0.0.0:8000');
-});
-
-app.listen(8000);

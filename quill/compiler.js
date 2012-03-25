@@ -1,30 +1,22 @@
 var fs     = require('fs')
+  , mu     = require('mu2')
   , path   = require('path')
   , util   = require('util')
-  , wrench = require('wrench')
-  , _      = require('underscore');
+  , wrench = require('wrench');
 
 /**
-  * createSiteDirectory
+  * after
   *
-  * Creates the directory where the static site will exist. Removes any
-  * existing directory beforehand.
+  * execute a callback after being called X times.
   *
-  * @param String directory Directory where the static site will be stored
-  * @param Function callback Callback function
+  * @param Int times Number of times function has to be called
+  * @param Function func Function to call
   */
-var createSiteDirectory = function(directory, callback) {
-  path.exists(directory, function(exists) {
-    if(exists) {
-      util.log("Removing directory: " + directory);
-      wrench.rmdirSyncRecursive(directory);
-    }
-
-    fs.mkdir(directory, function() {
-      util.log("Successfully created directory: " + directory);
-      callback();
-    });
-  });
+var after = function(times, func) {
+  if (times <= 0) return func();
+  return function() {
+    if (--times < 1) { return func.apply(this, arguments); }
+  };
 };
 
 /**
@@ -49,6 +41,29 @@ var copyAssets = function(themeDirectory, siteDirectory, callback) {
 
     wrench.copyDirRecursive(themeAssets, siteAssets, function() {
       util.log("Successfully copied assets");
+      callback();
+    });
+  });
+};
+
+/**
+  * createSiteDirectory
+  *
+  * Creates the directory where the static site will exist. Removes any
+  * existing directory beforehand.
+  *
+  * @param String directory Directory where the static site will be stored
+  * @param Function callback Callback function
+  */
+var createSiteDirectory = function(directory, callback) {
+  path.exists(directory, function(exists) {
+    if(exists) {
+      util.log("Removing directory: " + directory);
+      wrench.rmdirSyncRecursive(directory);
+    }
+
+    fs.mkdir(directory, function() {
+      util.log("Successfully created directory: " + directory);
       callback();
     });
   });
@@ -97,8 +112,37 @@ var findPosts = function(postsDir, callback) {
   });
 };
 
-var generateHTMLFiles = function(files, layout, callback) {
+var generateHTMLFiles = function(files, layout, outputDir, callback) {
+  var compileCompleted
+    , layoutHTML
+    , file
+    , fileStream
+    , outputFilename;
+
+  compileCompleted = after(files.length, function() {
+    console.log("All files have been compiled");
+    callback();
+  });
+
   console.log("Generating HTML files");
+  console.log(files);
+
+  for(var key in files) {
+    file = files[key];
+    fs.readFile(file.path, function(err, data) {
+      console.log("here");
+      if(err) {
+        return callback(err);
+      }
+
+      templateStream = mu.compileAndRender(layout, {content: data});
+      outputFilename = path.join(outputDir, file.url);
+      fileStream = fs.createWriteStream(outputFilename);
+
+      util.pump(templateStream, fileStream)
+      compileCompleted()
+    });
+  }
 };
 
 var compile = function(postsDir, themeDir, callback) {
@@ -106,9 +150,9 @@ var compile = function(postsDir, themeDir, callback) {
     , siteDirectory = path.join(__dirname, '..', '_site')
     , layout = path.join(themeDir, 'index.html');
 
-  var continueCompilation = _.after(2, function() {
+  var continueCompilation = after(2, function() {
     util.log("Generating static HTML files");
-    generateHTMLFiles(files, layout, callback);
+    generateHTMLFiles(files, layout, siteDirectory, callback);
   });
 
   createSiteDirectory(siteDirectory, function(err) {
