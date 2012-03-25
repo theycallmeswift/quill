@@ -111,6 +111,28 @@
 		h1,h2,h3,h4,h5,h6 {
 			text-shadow: #fff 0px 1px 1px;
 		}
+		#new-post-notice {
+			position: fixed;
+			top: 0px;
+			right: 18px;
+			background-color: #fff;
+			border: 1px solid #ccc;
+			border-top: none;
+			padding: 12px;
+			-webkit-border-bottom-right-radius: 6px;
+			-webkit-border-bottom-left-radius: 6px;
+			-moz-border-radius-bottomright: 6px;
+			-moz-border-radius-bottomleft: 6px;
+			border-bottom-right-radius: 6px;
+			border-bottom-left-radius: 6px;
+			text-align: center;
+			text-decoration: none;
+			font-weight: bold;
+			z-index: 100;
+		}
+		#new-post-notice:hover {
+			background-color: #f3f3f3;
+		}
 		</style>
 	</head>
 	<body>
@@ -143,5 +165,6 @@
 				</ol>
 			</div>
 		</div>
+    {{{ realtime }}}
 	</body>
 </html>

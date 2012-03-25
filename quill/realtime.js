@@ -10,10 +10,11 @@ socket.on('connected', function() {
       break;
     }
   }
-
    this.emit('update', lastPost);
 });
 
 socket.on('update', function(files) {
- console.log("out of date");
+  var newElement = '<a href="/" id="new-post-notice">A new post has been made! <br /><small>Click here to see it.</small></a>';
+  var bodyElement = document.body;
+  bodyElement.innerHTML = newElement + bodyElement.innerHTML;
 });
