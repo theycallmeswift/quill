@@ -1,0 +1,24 @@
+{
+  "name": "quill",
+  "description": "This is a blog based on Quill!",
+  "version": "0.0.1",
+  "engines": {
+    "node": "~0.6.9"
+  },
+  "dependencies": {
+    "colors": "0.6.0-1",
+    "handlebars": "1.0.5beta",
+    "marked": "0.2.3",
+    "node-static": "0.5.9",
+    "socket.io": "0.9.2",
+    "underscore": "1.3.1",
+    "wrench": "1.3.7",
+    "consolidate": "0.1.0",
+    "whiskers": "0.1.5"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "start": "quill.js"
+  }
+}
+

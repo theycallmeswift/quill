@@ -64,10 +64,12 @@ generators['new'] = function() {
 
       copyFile(sourceDir, targetDir);
 
-      sourceDir = expandPath('package.json', baseDir);
+      sourceDir = expandPath('package.json', baseDir + 'templates/');
       targetDir = expandPath('package.json', path + "/");
 
-      copyFile(sourceDir, targetDir);
+      var package = require(sourceDir);
+      package.name = dasherize(argv[1]);
+      fs.writeFileSync(targetDir, JSON.stringify(package));
 
       sourceDir = expandPath('config.json', baseDir);
       targetDir = expandPath('config.json', path + "/");
