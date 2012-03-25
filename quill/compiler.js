@@ -15,33 +15,56 @@ marked.setOptions({
 });
 
 /**
+ * Handlebars Realtime Helper
+ */
+hbs.registerHelper('realtime', function() {
+  return "<script src='/socket.io/socket.io.js'></script>\n<script src='/assets/quill/realtime.js'></script>";
+});
+
+/**
  * copyAssets
  *
  * Copys the assets folder from the theme directory into the new static site
- * directory.
+ * directory. Also move any quill files into the new assets folder.
  *
  * @param String themeDirectory Directory containing the theme
  * @param String siteDirectory Directory where the compiled static site exists
  * @param Function callback Callback function
  */
 var copyAssets = function(themeDirectory, siteDirectory, callback) {
+
+  var siteAssets = path.join(siteDirectory, 'assets')
+    , themeAssets = path.join(themeDirectory, 'assets');
+
+  var moveQuillAssets = function() {
+    var quillAssetsFolder = path.join(siteAssets, 'quill')
+      , realtimeAssetPath = path.join(siteAssets, 'quill', 'realtime.js')
+      , realtimePath = path.join(__dirname, 'realtime.js');
+
+    fs.mkdir(quillAssetsFolder, function() {
+      var is = fs.createReadStream(realtimePath);
+      var os = fs.createWriteStream(realtimeAssetPath);
+      util.pump(is, os);
+      callback();
+    });
+  };
+
   path.exists(themeDirectory, function(exists) {
     if(!exists) {
       return callback(new Error("Error: Theme does not exist"));
     }
 
-    var themeAssets = path.join(themeDirectory, 'assets')
-      , siteAssets = path.join(siteDirectory, 'assets');
-
     path.exists(themeAssets, function(exists) {
       if(!exists) {
         util.log("No assets directory found in " + themeDirectory);
-        return callback();
+        fs.mkdir(siteAssets, function() {
+          return moveQuillAssets();
+        });
       }
 
       wrench.copyDirRecursive(themeAssets, siteAssets, function() {
         util.log("Successfully copied assets");
-        callback();
+        moveQuillAssets();
       });
     });
   });
