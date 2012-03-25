@@ -132,6 +132,10 @@ var findPosts = function(postsDir, callback) {
       }
     }
 
+    if(matchingFiles.length == 0) {
+      return callback(false, []);
+    }
+
     fileCallback = function() {
       fileCounter += 1;
       if(fileCounter == matchingFiles.length) {
