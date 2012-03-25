@@ -1,0 +1,44 @@
+#!/usr/bin/env node
+var argv = process.argv.slice(2)
+  , fs   = require("fs")
+  , fd   = require("path");
+
+var expandPath = function(path, dir){
+  if (fd.basename(path) == path) {
+    path = dir + path
+  }
+  return fd.normalize(path);
+};
+
+var dasherize = function(str){
+  return str.trim(str).toLowerCase().replace(/[_\s]+/g, '-').replace(/([A-Z])/g, '-$1').replace(/-+/g, '-');
+};
+
+var help = [
+  "usage: quill [options] ",
+  "",
+  "Generates a Quill blog using the specified command-line options",
+  "",
+  "options:",
+  " new path             Generates a new Quill blog",
+  " post \"Post Title\"    Generates a new Quill post for the current blog"
+].join('\n');
+
+var generators = {};
+
+generators.post = function() {
+  var timestamp = Math.round(new Date().getTime() / 1000)
+  var template = __dirname + "/../posts/";
+  var filename = timestamp + "-" + dasherize(argv[1]) + ".md";
+  var fullpath = expandPath(filename, template);
+
+  fs.writeFile(fullpath, "", function() {
+    console.log("Successfully created post: " + fullpath);
+  });
+};
+
+if (generators[argv[0]]) {
+  generators[argv[0]]();
+} else {
+  console.log(help);
+}
