@@ -5,12 +5,14 @@
 		<link href='http://fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,400,700' rel='stylesheet' type='text/css'>
 		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
 		<script src="http://timefield.googlecode.com/svn/trunk/timefield.js" type="text/javascript"></script>
+		<title>{{ config.name }}}</title>
 		<link href='assets/structure.css' rel='stylesheet' type='text/css'>
 		<link rel="shortcut icon" type="image/png" href="assets/favicon.png" />
 		<style type="text/css">
 		html > body {
 			padding: 0px;
 			font-family: 'Open Sans', sans-serif;
+			background-image: url('assets/back.png');
 		}
 		#new-post-example {
 			display: none;
@@ -45,6 +47,31 @@
 		}
 		#blog-roll li {
 			margin: 16px auto;
+		#wrapper {
+			width: 600px;
+			margin: 18px auto;
+			-webkit-border-radius: 6px;
+			-moz-border-radius: 6px;
+			border-radius: 6px;
+			padding: 0px 18px;
+			overflow: contain;
+		}
+		#blog-roll {
+			display: block;
+			margin: 12px 0px;
+			background-color: #E6D7AD;
+			padding: 12px;
+			-webkit-border-radius: 5px;
+			-moz-border-radius: 5px;
+			text-align: center;
+			border: 1px solid #474132;
+		  -moz-box-shadow:    0px 1px 1px #9b8e6e;
+		  -webkit-box-shadow: 0px 1px 1px #9b8e6e;
+		  box-shadow:         0px 1px 1px #9b8e6e;
+		}
+		#blog-roll li {
+			display: inline-block; 
+			list-style-type: none;
 		}
 		#blog-roll li a {
 			display: block;
@@ -54,6 +81,24 @@
 			border: 4px solid #eee;
 			font-size: .8em;
 			text-decoration: none;
+			-webkit-border-radius: 5px;
+			-moz-border-radius: 5px;
+			border-radius: 5px;
+			display: inline-block;
+			padding: 3px 12px;
+			background-color: #CEBD88;
+			margin-right: 12px;
+			font-size: 14px;
+			font-weight: bold;
+			color: #0f0e0a;
+		  -moz-box-shadow:    0px 1px 1px #474132;
+		  -webkit-box-shadow: 0px 1px 1px #474132;
+		  box-shadow:         0px 1px 1px #474132;
+		  border: 1px solid #d3c28d;
+		}
+		#blog-roll li a:hover {
+			background-color: #ead79d;
+			color: #0f0e0a;
 		}
 		#blog-roll li a:hover {
 			border: 4px solid #ccc;
@@ -106,6 +151,56 @@
 		h1,h2,h3,h4,h5,h6 {
 			text-shadow: #fff 0px 1px 1px;
 		}
+		hgroup {
+			margin-bottom: 18px;
+			border-bottom: 1px dashed #877f6c;
+			padding-bottom: 6px;
+		}
+		#posts {
+			list-style-type: none;
+		}
+		#header {
+			margin-bottom: 18px;
+			background-color: #fcf7e7;
+			border-radius: 5px;
+			-webkit-border-radius: 5px;
+			-moz-border-radius: 5px;
+			padding: 18px;
+			padding-bottom: 6px;
+			margin-top: 18px;
+			border: 1px solid #474132;
+		  -moz-box-shadow:    0px 1px 2px #9b8e6e;
+		  -webkit-box-shadow: 0px 1px 2px #9b8e6e;
+		  box-shadow:         0px 1px 2px #9b8e6e;
+		  text-shadow: 0px 1px 1px #fff;
+		}
+		#navigation {
+			margin-bottom: 48px;
+		}
+		#posts li {
+			margin: 6px 0px;
+			background-color: #f4e6c3;
+			-webkit-border-radius: 6px;
+			-moz-border-radius: 6px;
+			border-radius: 6px;
+			padding: 0px 18px;
+			clear: both;
+			border: 1px solid #474132;
+		  -moz-box-shadow:    0px 1px 2px #9b8e6e;
+		  -webkit-box-shadow: 0px 1px 2px #9b8e6e;
+		  box-shadow:         0px 1px 2px #9b8e6e;
+		}
+		#posts small, #posts .muted {
+			color: #c9bda1;
+		}
+		.blog-intro {
+			margin: 6px 0px;
+			color: #f4e6c3;
+		  text-shadow: 0px 1px 1px #7f7962;
+		}
+		.blog-intro small {
+			color: #c2b289;
+		}
 		</style>
 	</head>
 	<body>
@@ -120,25 +215,20 @@
 					<h2>
 				</hgroup>
 				<ul id="blog-roll">
-					<li><a href="#">http://obviovs.com</a></li>
-					<li><a href="#">@obvious</a></li>
-					<li><a href="#">say hello</a></li>
-					<li><a href="#">rss</a></li>
+  				{{#each config.blogroll}}
+						<li><a href="{{ url }}" title="{{ description }}">{{ title }}</a></li>
+  				{{/each}}
 				</ul>
 			</header>
+			<h3 class="blog-intro">The Quill Blog <small>Powered by Quill</small></h3>
 			<div id="content">
 				<ol id="posts">
-    			
+    			{{#posts}}
 					<li>
-						<h3 class="title">Hello World <small>1332632874000</small></h3>
-						<div class='post' id='1332632874000'><h1>Hello world!</h1>
-<p>This is a sample markdown file that contains a lot of awesome elements that
-you may want to use.  <strong>For example</strong>, <a href="http://justquillin.com">links</a> or
-<code>inline code snippets</code>.
-</p>
-</div>
+						<h4 class="title">{{{ title }}} <small>{{{ timestamp }}}</small></h4>
+						{{{ body }}}
 					</li>
-    			
+    			{{/posts}}
 				</ol>
 			</div>
 		</div>
