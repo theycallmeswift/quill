@@ -5,7 +5,7 @@
   ],
   "name": "quill",
   "description": "A realtime git backed blogging engine for node.js",
-  "version": "0.0.0",
+  "version": "0.0.0-1",
   "homepage": "http://justquillin.com/",
   "repository": {
     "type": "git",
@@ -24,5 +24,13 @@
     "colors": "0.6.0-1",
     "wrench": "1.3.7"
   },
-  "devDependencies": {}
+  "devDependencies": {},
+  "domains": [
+    "justquillin.com",
+    "www.justquillin.com"
+  ],
+  "subdomain": "quill",
+  "scripts": {
+    "start": "quill.js"
+  }
 }

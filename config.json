@@ -1,4 +1,7 @@
 {
   "development": true,
-  "theme": "barebones"
+  "theme": "barebones",
+  "blogroll": {
+  	"Download Quill": "https://github.com/theycallmeswift/quill"
+  }
 }

@@ -59,7 +59,8 @@ compiler.compile(postsDir, themeDir, config, function(err) {
     console.log('  a ' + 'HackNY'.red + ' hack');
     console.log('');
     console.log('-------------------------------------');
-    console.log('');
+    console.log('  Using theme ' + String(config.theme).cyan);
+    console.log('-------------------------------------')
     console.log('Starting server on port 8000');
   });
 
