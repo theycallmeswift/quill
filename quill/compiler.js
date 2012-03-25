@@ -5,6 +5,16 @@ var fs     = require('fs')
   , util   = require('util')
   , wrench = require('wrench');
 
+
+/**
+ * Markdown Options
+ */
+marked.setOptions({
+  gfm: true,
+  pedantic: false,
+  sanitize: false
+});
+
 /**
  * copyAssets
  *
@@ -18,7 +28,6 @@ var fs     = require('fs')
 var copyAssets = function(themeDirectory, siteDirectory, callback) {
   path.exists(themeDirectory, function(exists) {
     if(!exists) {
-      debugger
       return callback(new Error("Error: Theme does not exist"));
     }
 
@@ -76,9 +85,10 @@ var createSiteDirectory = function(directory, callback) {
  */
 var findPosts = function(postsDir, callback) {
   fs.readdir(postsDir, function(err, files) {
-    var filename
+    var fileCounter = 0
+      , filename
+      , fileObject
       , filePath
-      , key
       , match
       , results = [];
 
@@ -86,26 +96,52 @@ var findPosts = function(postsDir, callback) {
       return callback(err);
     }
 
-    for(key in files) {
+    var matchingFiles = [];
+    for(var key in files) {
       filename = files[key];
       match = filename.match(/^(\d+)-(.*).md$/);
 
       if(match) {
-
-        filePath = path.join(__dirname, '..', 'posts', filename);
-        results.push({
-          title:     humanized(match[2]),
-          name:      filename,
-          path:      filePath,
-          timestamp: match[1] * 1000,
-          url:       match[2].toLowerCase() + '.html'
+        matchingFiles.push({
+          filename: filename,
+          hypenizedTitle: match[2],
+          timestamp: match[1]
         });
       }
     }
 
-    console.log(results);
+    fileCallback = function() {
+      fileCounter += 1;
+      if(fileCounter == matchingFiles.length) {
+        return callback(false, results);
+      }
+    };
 
-    return callback(false, results);
+    for(var key in matchingFiles) {
+      fileObject = matchingFiles[key];
+      (function() {
+        var title = fileObject.hypenizedTitle
+          , time  = fileObject.timestamp;
+
+        filePath = path.join(__dirname, '..', 'posts', fileObject.filename);
+        fs.readFile(filePath, function(err, data) {
+          if(err) {
+            return callback(err);
+          }
+
+          results.push({
+            title:     humanized(title),
+            body:      marked(data.toString()),
+            name:      filename,
+            path:      filePath,
+            timestamp: time * 1000,
+            url:       title.toLowerCase() + '.html'
+          });
+
+          fileCallback();
+        });
+      })();
+    }
   });
 };
 
@@ -122,17 +158,12 @@ var generateHTMLFiles = function(files, layout, outputDir, config, callback) {
 
   compileCompleted = function() {
     counter += 1;
-    if(counter == files.length) {
+    if(counter == files.length + 1) {
       util.log("Generating static HTML files");
       callback();
     }
   };
 
-  marked.setOptions({
-    gfm: true,
-    pedantic: false,
-    sanitize: false
-  });
 
   fs.readFile(layout, function(err, layoutBuffer) {
     if(err) {
@@ -141,32 +172,35 @@ var generateHTMLFiles = function(files, layout, outputDir, config, callback) {
 
     compiledTemplate = hbs.compile(layoutBuffer.toString());
 
+    var indexPosts = [];
+
     for(var key in files) {
       file = files[key];
-      fs.readFile(file.path, function(err, data) {
+      var pagePosts = [];
+
+      pagePosts.push(file);
+      indexPosts.push(file);
+
+      layoutHTML = compiledTemplate({ config: config, posts: pagePosts });
+
+      outputFilename = path.join(outputDir, file.url);
+      var fileRes = fs.writeFile(outputFilename, layoutHTML, function(err) {
         if(err) {
           return callback(err);
         }
-
-        var pageArray = [];
-        pageArray.push({
-          title: file.title,
-          body: "<div class='post' id='" + file.timestamp + "'>" + marked(data.toString()) + "</div>",
-          timestamp: file.timestamp,
-          url: file.url
-        });
-
-        layoutHTML = compiledTemplate({ config: config, posts: pageArray });
-
-        outputFilename = path.join(outputDir, file.url);
-        var fileRes = fs.writeFile(outputFilename, layoutHTML, function(err) {
-          if(err) {
-            return callback(err);
-          }
-          compileCompleted();
-        });
+        compileCompleted();
       });
     }
+
+    indexHTML = compiledTemplate({ config: config, posts: indexPosts });
+
+    outputFilename = path.join(outputDir, 'index.html');
+    var fileRes = fs.writeFile(outputFilename, indexHTML, function(err) {
+      if(err) {
+        return callback(err);
+      }
+      compileCompleted();
+    });
   });
 };
 
