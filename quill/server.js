@@ -1,13 +1,12 @@
-var http   = require('http')
-  , fs     = require('fs')
-  , marked = require('marked')
+var colors = require('colors')
+  , compiler = require('./compiler')
+  , config = require('../config.json')
+  , http   = require('http')
+  , mu     = require('mu2')
   , path   = require('path')
   , sio    = require('socket.io')
   , static = require('node-static')
-  , util   = require('util')
-  , config = require('../config.json')
-  , colors = require('colors')
-  , mu = require('mu2')
+  , util   = require('util');
 
 var debugError = function(errorMessage, data){
   if (config.development) {
@@ -33,24 +32,9 @@ var bigQuill = function() {
 }
 
 var postsDir = path.join(__dirname, '..', 'posts');
-fs.readdir(postsDir, function(err, files) {
-  var filename
-    , filePath
-    , isFile
-    , key;
+compiler.compile(postsDir);
 
-  if(err) {
-    throw err;
-  }
-
-  for(key in files) {
-    filename = files[key];
-    filePath = path.join(__dirname, '../posts', filename);
-    isFile = fs.statSync(filePath).isFile();
-  }
-});
-
-mu.root = __dirname + '/themes/' + config.theme;
+mu.root = path.join(__dirname, 'themes', config.theme);
 var app = http.createServer(function(req, res) {
   if (config.development) {
     mu.clearCache();
