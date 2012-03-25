@@ -1,5 +1,7 @@
 var http   = require('http')
+  , fs     = require('fs')
   , marked = require('marked')
+  , path   = require('path')
   , sio    = require('socket.io')
   , static = require('node-static')
   , util   = require('util')
@@ -30,6 +32,24 @@ var bigQuill = function() {
   console.log('');
 }
 
+var postsDir = path.join(__dirname, '..', 'posts');
+fs.readdir(postsDir, function(err, files) {
+  var filename
+    , filePath
+    , isFile
+    , key;
+
+  if(err) {
+    throw err;
+  }
+
+  for(key in files) {
+    filename = files[key];
+    filePath = path.join(__dirname, '../posts', filename);
+    isFile = fs.statSync(filePath).isFile();
+  }
+});
+
 mu.root = __dirname + '/themes/' + config.theme;
 var app = http.createServer(function(req, res) {
   if (config.development) {
@@ -45,7 +65,6 @@ sioApp.sockets.on('connection', function(socket) {
   util.log("New socket connection");
   socket.emit('connected');
 });
-
 
 app.on('listening', function() {
   bigQuill();
