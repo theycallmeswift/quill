@@ -1,43 +1,43 @@
 <!doctype html>
-  <head>
-    <title>Barebones Theme</title>
-    <link rel="shortcut icon" type="image/png" href="assets/favicon.png" />
-    <link href='assets/structure.css' rel='stylesheet' type='text/css'>
-    <style type="text/css">
-    body {
-      padding: 52px 64px;
-    }
-    </style>
-  </head>
-  <body>
-    <div id="wrapper">
-      <header id="navigation">
-        <hgroup>
-          <div id="blog-logo"></div>
-          <h1 id="blog-title">obviovs</h1>
-          <h2 id="blog-description">
-            A witty slogan
-          <h2>
-        </hgroup>
-        <ul id="blog-roll">
-          <li><a href="#">http://obviovs.com</a></li>
-          <li><a href="#">@obvious</a></li>
-          <li><a href="#">say hello</a></li>
-          <li><a href="#">rss</a></li>
-        </ul>
-      </header>
-      <div id="content">
-        <ol id="posts">
-          {{#posts}}
-          <li id="new-post-example">
-            <h3 class="title">{{{ title }}} <small>{{{ timestamp }}}</small></h3>
-            {{{ body }}}
-          </li>
-          {{/posts}}
-        </ol>
-      </div>
-    </div>
-    <script src="/socket.io/socket.io.js"></script>
+	<head>
+		<title>Barebones Theme</title>
+		<link rel="shortcut icon" type="image/png" href="assets/favicon.png" />
+		<link href='assets/structure.css' rel='stylesheet' type='text/css'>
+		<style type="text/css">
+		body {
+			padding: 52px 64px;
+		}
+		</style>
+	</head>
+	<body>
+		<div id="wrapper">
+			<header id="navigation">
+				<hgroup>
+					<div id="blog-logo"></div>
+					<h1 id="blog-title">obviovs</h1>
+					<h2 id="blog-description">
+						A witty slogan
+					<h2>
+				</hgroup>
+				<ul id="blog-roll">
+					<li><a href="#">http://obviovs.com</a></li>
+					<li><a href="#">@obvious</a></li>
+					<li><a href="#">say hello</a></li>
+					<li><a href="#">rss</a></li>
+				</ul>
+			</header>
+			<div id="content">
+				<ol id="posts">
+    			{{#posts}}
+					<li>
+						<h3 class="title">{{{ title }}} <small>{{{ timestamp }}}</small></h3>
+						{{{ body }}}
+					</li>
+    			{{/posts}}
+				</ol>
+			</div>
+		</div>
+    <script src="../socket.io/socket.io.js"></script>
     <script>
       var socket = io.connect('/');
       socket.on('connected', function() {
