@@ -5,7 +5,8 @@ var colors = require('colors')
   , path   = require('path')
   , sio    = require('socket.io')
   , static = require('node-static')
-  , util   = require('util');
+  , util   = require('util')
+  , colors = require('colors');
 
 var debugError = function(errorMessage, data){
   if (config.development) {
@@ -46,15 +47,20 @@ compiler.compile(postsDir, themeDir, config, function(err) {
 
   app.on('listening', function() {
     console.log('');
-    console.log('                       _/  _/  _/'.green);
-    console.log('    _/_/_/  _/    _/      _/  _/ '.green);
-    console.log(' _/    _/  _/    _/  _/  _/  _/'.green);
-    console.log('_/    _/  _/    _/  _/  _/  _/'.green);
-    console.log(' _/_/_/    _/_/_/  _/  _/  _/'.green);
-    console.log('    _/'.green);
-    console.log('   _/'.green);
+    console.log('                         _/  _/  _/'.cyan);
+    console.log('      _/_/_/  _/    _/      _/  _/ '.cyan);
+    console.log('   _/    _/  _/    _/  _/  _/  _/'.cyan);
+    console.log('  _/    _/  _/    _/  _/  _/  _/'.cyan);
+    console.log('   _/_/_/    _/_/_/  _/  _/  _/'.cyan);
+    console.log('      _/'.cyan);
+    console.log('     _/'.cyan + '    blogging for hackers'.green);
     console.log('');
-    util.log('Server listening on 0.0.0.0:8000');
+    console.log('  v0.0.1'.yellow);
+    console.log('  a ' + 'HackNY'.red + ' hack');
+    console.log('');
+    console.log('-------------------------------------');
+    console.log('');
+    console.log('Starting server on port 8000');
   });
 
 
