@@ -50,7 +50,7 @@ compiler.compile(postsDir, themeDir, config, function(err, files) {
   sioApp.sockets.on('connection', function(socket) {
     socket.emit('connected');
     socket.on('update', function(postId) {
-      if(files.length && postId * 1000 < files[0].timestamp) {
+      if(files && files.length && postId * 1000 < files[0].timestamp) {
         socket.emit('update', files);
       }
     });

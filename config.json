@@ -1,23 +1,23 @@
 {
   "development": true,
-  "theme": "simplertimes",
+  "theme": "bootstrap",
   "name": "Quill",
   "description": "Stop blogging, start Quillin.",
   "blogroll": [
-  	{
-  		"title": "Download Quill",
-  		"url": "https://github.com/theycallmeswift/quill",
-  		"description": "Get the quill server"
-  	},
-  	{
-  		"title": "Official Docs",
-  		"url": "https://github.com/theycallmeswift/quill",
-  		"description": "The official documentation"
-  	},
-  	{
-  		"title": "Follow us on Twitter",
-  		"url": "http://twitter.com/justquillin",
-  		"description": "Follow @justquillin on Twitter"
-  	}
+    {
+      "title": "Download Quill",
+      "url": "https://github.com/theycallmeswift/quill",
+      "description": "Get the quill server"
+    },
+    {
+      "title": "Official Docs",
+      "url": "https://github.com/theycallmeswift/quill",
+      "description": "The official documentation"
+    },
+    {
+      "title": "Follow us on Twitter",
+      "url": "http://twitter.com/justquillin",
+      "description": "Follow @justquillin on Twitter"
+    }
   ]
 }
