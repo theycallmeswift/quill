@@ -39,7 +39,7 @@ var copyAssets = function(themeDirectory, siteDirectory, callback) {
   var moveQuillAssets = function() {
     var quillAssetsFolder = path.join(siteAssets, 'quill')
       , realtimeAssetPath = path.join(siteAssets, 'quill', 'realtime.js')
-      , realtimePath = path.join(__dirname, 'realtime.js');
+      , realtimePath = path.join(__dirname, 'scaffolding', 'realtime.js');
 
     fs.mkdir(quillAssetsFolder, function() {
       var is = fs.createReadStream(realtimePath);

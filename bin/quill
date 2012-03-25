@@ -64,7 +64,7 @@ generators['new'] = function() {
 
       copyFile(sourceDir, targetDir);
 
-      sourceDir = expandPath('package.json', baseDir + 'templates/');
+      sourceDir = expandPath('package.json', baseDir + 'quill/scaffolding/');
       targetDir = expandPath('package.json', path + "/");
 
       var package = require(sourceDir);

@@ -9,17 +9,6 @@ var colors = require('colors')
   , util   = require('util')
   , intro = require('./intro');
 
-var debugError = function(errorMessage, data){
-  if (config.development) {
-    console.log('################ ERROR ##################');
-    console.log(errorMessage);
-    if(data) {
-      console.log(data);
-    }
-    console.log('################ ERROR ##################');
-  }
-};
-
 var themeDir = path.join(__dirname, '..', 'themes', config.theme);
 var postsDir = path.join(__dirname, '..', 'posts');
 
