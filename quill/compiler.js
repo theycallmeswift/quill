@@ -5,7 +5,6 @@ var fs     = require('fs')
   , util   = require('util')
   , wrench = require('wrench');
 
-
 /**
  * Markdown Options
  */
@@ -75,9 +74,9 @@ var createSiteDirectory = function(directory, callback) {
  * findPosts
  *
  * Locate all the generated post markdown files inside the posts directory.
- * Only matches filenames in the `1234567890-post-title.md`.  Returns an
- * array of file objects that have `name`, `path`, `timestamp`, and `url`
- * properties.
+ * Only matches filenames in the `1234567890-post-title.md` formate.
+ * Returns an * array of file objects that have `name`, `path`, `timestamp`,
+ * `url`, `body`, and `title` properties.
  *
  * @param String postsDir Directory containing all the post files
  * @param Function callback Callback function
@@ -147,6 +146,20 @@ var findPosts = function(postsDir, callback) {
   });
 };
 
+/**
+ * generateHTMLfiles
+ *
+ * Takes an array of file objectes and a layout and compiles them to static html
+ * files within the output directory.  Also exposes the config to the markdown
+ * files. Also compiles an index file containing all the pages.
+ *
+ * @param Array files the array of file objects to render html pages for.
+ * @param String layout the path to the layout file
+ * @param String outputDir the output directory for the HTML files
+ * @param Object config the contents of config.json
+ * @param Function callback the callback function
+ * @return Array the sorted array of posts in the index
+ */
 var generateHTMLFiles = function(files, layout, outputDir, config, callback) {
   var counter = 0
     , compileCompleted
@@ -165,7 +178,6 @@ var generateHTMLFiles = function(files, layout, outputDir, config, callback) {
       callback(false, posts);
     }
   };
-
 
   fs.readFile(layout, function(err, layoutBuffer) {
     if(err) {
@@ -211,8 +223,15 @@ var generateHTMLFiles = function(files, layout, outputDir, config, callback) {
   });
 };
 
+/**
+ * humanized
+ *
+ * Takes in a hypen-separated-string and converts it to Human Readable Format
+ *
+ * @param String string String to convert to human format.
+ * @return String the human readable string
+ */
 var humanized = function(string) {
-
   var terms = string.split('-');
 
   for(var i=0; i < terms.length; i++){
@@ -222,6 +241,20 @@ var humanized = function(string) {
   return terms.join(' ');
 }
 
+/**
+ * compile
+ *
+ * Take a posts directory containing markdown posts, a theme directory containing
+ * an index.html and any assets in an assets folder, and a config and produces a
+ * compiled, static HTML site in the _site folder of the root directory.  Also,
+ * returns a sorted array of files so the server can hundle real time updates.
+ *
+ * @param String postsDir directory containing all the markdown posts
+ * @param String themeDir directory containing the theme files
+ * @param Object siteConfig contents of config.json
+ * @param Function callback the callback function
+ * @return Array a sorted array of file objects
+ */
 var compile = function(postsDir, themeDir, siteConfig, callback) {
   var counter = 0
     , files
