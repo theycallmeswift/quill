@@ -5,7 +5,7 @@
   ],
   "name": "quill",
   "description": "A realtime git backed blogging engine for node.js",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "homepage": "http://justquillin.com/",
   "repository": {
     "type": "git",
