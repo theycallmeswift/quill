@@ -7,23 +7,26 @@
 		body {
 			padding: 52px 64px;
 		}
+		#posts {
+			list-style-type: none;
+		}
 		</style>
 	</head>
 	<body>
 		<div id="wrapper">
 			<header id="navigation">
 				<hgroup>
-					<div id="blog-logo"></div>
-					<h1 id="blog-title">obviovs</h1>
-					<h2 id="blog-description">
-						A witty slogan
-					<h2>
+					{{#if config.name}}
+						<h1 id="blog-title">{{ config.name }}}</h1>
+					{{/if}}
+					{{#if config.description}}
+						<h2 id="blog-description">{{ config.description }}}<h2>
+					{{/if}}
 				</hgroup>
 				<ul id="blog-roll">
-					<li><a href="#">http://obviovs.com</a></li>
-					<li><a href="#">@obvious</a></li>
-					<li><a href="#">say hello</a></li>
-					<li><a href="#">rss</a></li>
+  				{{#each config.blogroll}}
+						<li><a href="{{ url }}" title="{{ description }}">{{ title }}</a></li>
+  				{{/each}}
 				</ul>
 			</header>
 			<div id="content">

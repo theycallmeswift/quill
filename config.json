@@ -1,7 +1,23 @@
 {
   "development": true,
   "theme": "obviovs",
-  "blogroll": {
-  	"Download Quill": "https://github.com/theycallmeswift/quill"
-  }
+  "name": "Quill",
+  "description": "Stop blogging and start quillin.",
+  "blogroll": [
+  	{
+  		"title": "Download Quill",
+  		"url": "https://github.com/theycallmeswift/quill",
+  		"description": "Get the quill server"
+  	},
+  	{
+  		"title": "Official Docs",
+  		"url": "https://github.com/theycallmeswift/quill",
+  		"description": "The official documentation"
+  	},
+  	{
+  		"title": "Follow us on Twitter",
+  		"url": "http://twitter.com/justquillin",
+  		"description": "Follow @justquillin on Twitter"
+  	}
+  ]
 }
