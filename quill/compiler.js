@@ -129,9 +129,11 @@ var findPosts = function(postsDir, callback) {
             return callback(err);
           }
 
+          wrappedBody = "<div class='_post' id='" + time + "'>" + marked(data.toString()) + "</div>";
+
           results.push({
             title:     humanized(title),
-            body:      marked(data.toString()),
+            body:      wrappedBody,
             name:      filename,
             path:      filePath,
             timestamp: time * 1000,
@@ -156,11 +158,11 @@ var generateHTMLFiles = function(files, layout, outputDir, config, callback) {
     , resultsArray;
 
 
-  compileCompleted = function() {
+  compileCompleted = function(posts) {
     counter += 1;
     if(counter == files.length + 1) {
       util.log("Generating static HTML files");
-      callback();
+      callback(false, posts);
     }
   };
 
@@ -192,6 +194,11 @@ var generateHTMLFiles = function(files, layout, outputDir, config, callback) {
       });
     }
 
+    var sortByTimestamp = function(a, b) {
+      return (a.timestamp < b.timestamp) ? 1 : -1;
+    }
+    indexPosts.sort(sortByTimestamp);
+
     indexHTML = compiledTemplate({ config: config, posts: indexPosts });
 
     outputFilename = path.join(outputDir, 'index.html');
@@ -199,7 +206,7 @@ var generateHTMLFiles = function(files, layout, outputDir, config, callback) {
       if(err) {
         return callback(err);
       }
-      compileCompleted();
+      compileCompleted(indexPosts);
     });
   });
 };
@@ -237,12 +244,12 @@ var compile = function(postsDir, themeDir, siteConfig, callback) {
           return callback(err);
         }
 
-        generateHTMLFiles(files, layout, siteDirectory, siteConfig, function(err) {
+        generateHTMLFiles(files, layout, siteDirectory, siteConfig, function(err, posts) {
           if(err) {
             return callback(err);
           }
           util.log("Site successfully compiled into _site");
-          callback(err);
+          callback(false, posts);
         });
       });
     });

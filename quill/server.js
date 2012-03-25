@@ -7,7 +7,6 @@ var colors = require('colors')
   , sio    = require('socket.io')
   , static = require('node-static')
   , util   = require('util')
-  , colors = require('colors')
   , intro = require('./intro');
 
 var debugError = function(errorMessage, data){
@@ -24,7 +23,7 @@ var debugError = function(errorMessage, data){
 var themeDir = path.join(__dirname, '..', 'themes', config.theme);
 var postsDir = path.join(__dirname, '..', 'posts');
 
-compiler.compile(postsDir, themeDir, config, function(err) {
+compiler.compile(postsDir, themeDir, config, function(err, files) {
   if(err) {
     throw err;
   }
@@ -44,6 +43,16 @@ compiler.compile(postsDir, themeDir, config, function(err) {
           return;
         }
       });
+    });
+  });
+
+  var sioApp = sio.listen(app);
+  sioApp.sockets.on('connection', function(socket) {
+    socket.emit('connected');
+    socket.on('update', function(postId) {
+      if(postId * 1000 < files[0].timestamp) {
+        socket.emit('update', files);
+      }
     });
   });
 
