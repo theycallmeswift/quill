@@ -21,7 +21,6 @@ var themeDir = path.join(__dirname, '..', 'themes', config.theme);
 var postsDir = path.join(__dirname, '..', 'posts');
 
 compiler.compile(postsDir, themeDir, function() {
-  console.log("Site successfully compiled into _site");
 
   var filePath = path.join(__dirname, '..', '_site');
   var fileServer = new static.Server(filePath);

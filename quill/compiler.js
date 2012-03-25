@@ -80,7 +80,7 @@ var findPosts = function(postsDir, callback) {
 
     for(key in files) {
       filename = files[key];
-      match = filename.match(/^(\d+)-(.*).md$/)
+      match = filename.match(/^(\d+)-(.*).md$/);
 
       if(match) {
         filePath = path.join(__dirname, '..', 'posts', filename);
@@ -106,7 +106,7 @@ var generateHTMLFiles = function(files, layout, outputDir, callback) {
     , outputFilename;
 
 
-  var compileCompleted = function() {
+  compileCompleted = function() {
     counter += 1;
     if(counter == files.length) {
       util.log("Generating static HTML files");
@@ -144,35 +144,31 @@ var compile = function(postsDir, themeDir, callback) {
     , siteDirectory = path.join(__dirname, '..', '_site')
     , layout = path.join(themeDir, 'index.html');
 
-  var continueCompilation = function() {
-    counter += 1;
-    if(counter == 2) {
-      util.log("Generating static HTML files");
-      generateHTMLFiles(files, layout, siteDirectory, callback);
-    }
-  };
-
-  createSiteDirectory(siteDirectory, function(err) {
-    if(err) {
-      return callback(err);
-    }
-
-    copyAssets(themeDir, siteDirectory, function() {
-      if(err) {
-        return callback(err);
-      }
-
-      continueCompilation();
-    });
-  });
-
   findPosts(postsDir, function(err, result) {
     if(err) {
       return callback(err);
     }
     files = result;
 
-    continueCompilation();
+    createSiteDirectory(siteDirectory, function(err) {
+      if(err) {
+        return callback(err);
+      }
+
+      copyAssets(themeDir, siteDirectory, function() {
+        if(err) {
+          return callback(err);
+        }
+
+        generateHTMLFiles(files, layout, siteDirectory, function(err) {
+          if(err) {
+            return callback(err);
+          }
+          util.log("Site successfully compiled into _site");
+          callback(err);
+        });
+      });
+    });
   });
 };
 
