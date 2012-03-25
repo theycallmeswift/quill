@@ -36,13 +36,13 @@ sioApp.sockets.on('connection', function(socket) {
 
 app.on('listening', function() {
   console.log('');
-  console.log('                       _/  _/  _/');
-  console.log('    _/_/_/  _/    _/      _/  _/ ');
-  console.log(' _/    _/  _/    _/  _/  _/  _/');
-  console.log('_/    _/  _/    _/  _/  _/  _/');
-  console.log(' _/_/_/    _/_/_/  _/  _/  _/');
-  console.log('    _/');
-  console.log('   _/');
+  console.log('                         _/  _/  _/'.green);
+  console.log('      _/_/_/  _/    _/      _/  _/ '.green);
+  console.log('   _/    _/  _/    _/  _/  _/  _/'.green);
+  console.log('  _/    _/  _/    _/  _/  _/  _/'.green);
+  console.log('   _/_/_/    _/_/_/  _/  _/  _/'.green);
+  console.log('      _/'.green);
+  console.log('     _/'.green);
   console.log('');
   util.log('Server listening on 0.0.0.0:8000');
 });
