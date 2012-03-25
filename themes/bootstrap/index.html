@@ -82,9 +82,12 @@
       <!-- Example row of columns -->
       <div class="row">
         <div class="span8">
+          <h2>Posts</h2>
           {{#posts}}
-            <h2>{{{ title }}} <small class="timefield t:{{ timestamp }}"></small></h2>
-            {{{ body }}}
+            <div class="well">
+              <h2>{{{ title }}} <small class="timefield t:{{ timestamp }}"></small></h2>
+              {{{ body }}}
+            </div>
           {{/posts}}
         </div>
         <div class="span4">

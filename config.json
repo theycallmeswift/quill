@@ -1,8 +1,8 @@
 {
   "development": true,
-  "theme": "bootstrap",
+  "theme": "simplertimes",
   "name": "Quill",
-  "description": "Stop blogging and start quillin.",
+  "description": "Stop blogging, start Quillin.",
   "blogroll": [
   	{
   		"title": "Download Quill",

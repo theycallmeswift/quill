@@ -14,7 +14,7 @@ socket.on('connected', function() {
 });
 
 socket.on('update', function(files) {
-  var newElement = '<a href="/" id="new-post-notice">A new post has been made! <br /><small>Click here to see it.</small></a>';
+  var newElement = '<a href="javascript:location.reload(true)" id="new-post-notice">A new post has been made! <br /><small>Click here to see it.</small></a>';
   var bodyElement = document.body;
   bodyElement.innerHTML = newElement + bodyElement.innerHTML;
 });
