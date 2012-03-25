@@ -1,8 +1,58 @@
-var fs   = require('fs')
-  , path = require('path');
+var fs     = require('fs')
+  , path   = require('path')
+  , util   = require('util')
+  , wrench = require('wrench')
+  , _      = require('underscore');
 
-var createSiteDirectory = function() {};
-var copyAssets = function() {};
+/**
+  * createSiteDirectory
+  *
+  * Creates the directory where the static site will exist. Removes any
+  * existing directory beforehand.
+  *
+  * @param String directory Directory where the static site will be stored
+  * @param Function callback Callback function
+  */
+var createSiteDirectory = function(directory, callback) {
+  path.exists(directory, function(exists) {
+    if(exists) {
+      util.log("Removing directory: " + directory);
+      wrench.rmdirSyncRecursive(directory);
+    }
+
+    fs.mkdir(directory, function() {
+      util.log("Successfully created directory: " + directory);
+      callback();
+    });
+  });
+};
+
+/**
+ * copyAssets
+ *
+ * Copys the assets folder from the theme directory into the new static site
+ * directory.
+ *
+ * @param String themeDirectory Directory containing the theme
+ * @param String siteDirectory Directory where the compiled static site exists
+ * @param Function callback Callback function
+ */
+var copyAssets = function(themeDirectory, siteDirectory, callback) {
+  var themeAssets = path.join(themeDirectory, 'assets')
+    , siteAssets = path.join(siteDirectory, 'assets');
+
+  path.exists(themeAssets, function(exists) {
+    if(!exists) {
+      util.log("No assets directory found in " + themeDirectory);
+      return callback();
+    }
+
+    wrench.copyDirRecursive(themeAssets, siteAssets, function() {
+      util.log("Successfully copied assets");
+      callback();
+    });
+  });
+};
 
 /**
  * findPosts
@@ -47,30 +97,30 @@ var findPosts = function(postsDir, callback) {
   });
 };
 
-var compile = function(postsDir, themeDir, callback) {
-  var completeFunctionCounter = 0
-    , files
-    , siteDirectory = path.join(__dirname, '..', '_site');
+var generateHTMLFiles = function(files, layout, callback) {
+  console.log("Generating HTML files");
+};
 
-  var continueCompilation = function() {
-    if(completeFunctionCounter == 2) {
-      console.log("Generating HTML files");
-      return generateHTMLFiles(files, template, callback);
-    }
-    console.log("Not generating HTML files");
-  };
+var compile = function(postsDir, themeDir, callback) {
+  var files
+    , siteDirectory = path.join(__dirname, '..', '_site')
+    , layout = path.join(themeDir, 'index.html');
+
+  var continueCompilation = _.after(2, function() {
+    util.log("Generating static HTML files");
+    generateHTMLFiles(files, layout, callback);
+  });
 
   createSiteDirectory(siteDirectory, function(err) {
     if(err) {
       return callback(err);
     }
 
-    copyAssets(themeDir, siteDir, function() {
+    copyAssets(themeDir, siteDirectory, function() {
       if(err) {
         return callback(err);
       }
 
-      completeFunctionCounter += 1;
       continueCompilation();
     });
   });
@@ -81,7 +131,6 @@ var compile = function(postsDir, themeDir, callback) {
     }
     files = result;
 
-    completeFunctionCounter += 1;
     continueCompilation();
   });
 };
