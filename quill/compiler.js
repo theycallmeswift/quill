@@ -1,5 +1,6 @@
-var cons   = require('consolidate')
-  , fs     = require('fs')
+var fs     = require('fs')
+  , hbs    = require('handlebars')
+  , marked = require('marked')
   , path   = require('path')
   , util   = require('util')
   , wrench = require('wrench');
@@ -90,15 +91,19 @@ var findPosts = function(postsDir, callback) {
       match = filename.match(/^(\d+)-(.*).md$/);
 
       if(match) {
+
         filePath = path.join(__dirname, '..', 'posts', filename);
         results.push({
+          title:     humanized(match[2]),
           name:      filename,
           path:      filePath,
-          timestamp: match[1],
+          timestamp: match[1] * 1000,
           url:       match[2].toLowerCase() + '.html'
         });
       }
     }
+
+    console.log(results);
 
     return callback(false, results);
   });
@@ -107,10 +112,12 @@ var findPosts = function(postsDir, callback) {
 var generateHTMLFiles = function(files, layout, outputDir, config, callback) {
   var counter = 0
     , compileCompleted
+    , compiledTemplate
     , layoutHTML
     , file
     , fileStream
-    , outputFilename;
+    , outputFilename
+    , resultsArray;
 
 
   compileCompleted = function() {
@@ -121,29 +128,58 @@ var generateHTMLFiles = function(files, layout, outputDir, config, callback) {
     }
   };
 
-  for(var key in files) {
-    file = files[key];
-    fs.readFile(file.path, function(err, data) {
-      if(err) {
-        return callback(err);
-      }
+  marked.setOptions({
+    gfm: true,
+    pedantic: false,
+    sanitize: false
+  });
 
-      cons.whiskers(layout, { config: config, content: data.toString() }, function(err, html) {
+  fs.readFile(layout, function(err, layoutBuffer) {
+    if(err) {
+      return callback(err);
+    }
+
+    compiledTemplate = hbs.compile(layoutBuffer.toString());
+
+    for(var key in files) {
+      file = files[key];
+      fs.readFile(file.path, function(err, data) {
         if(err) {
           return callback(err);
         }
 
+        var pageArray = [];
+        pageArray.push({
+          title: file.title,
+          body: "<div class='post' id='" + file.timestamp + "'>" + marked(data.toString()) + "</div>",
+          timestamp: file.timestamp,
+          url: file.url
+        });
+
+        layoutHTML = compiledTemplate({ config: config, posts: pageArray });
+
         outputFilename = path.join(outputDir, file.url);
-        var fileRes = fs.writeFile(outputFilename, html, function(err) {
+        var fileRes = fs.writeFile(outputFilename, layoutHTML, function(err) {
           if(err) {
             return callback(err);
           }
           compileCompleted();
         });
       });
-    });
-  }
+    }
+  });
 };
+
+var humanized = function(string) {
+
+  var terms = string.split('-');
+
+  for(var i=0; i < terms.length; i++){
+    terms[i] = terms[i].toLowerCase().charAt(0).toUpperCase() + terms[i].slice(1);
+  }
+
+  return terms.join(' ');
+}
 
 var compile = function(postsDir, themeDir, siteConfig, callback) {
   var counter = 0

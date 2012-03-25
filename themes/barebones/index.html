@@ -4,7 +4,11 @@
     <title>Foobar</title>
   </head>
   <body>
-    {{content}}
+    {{#posts}}
+      <h1>{{{ title }}}</h1>
+      <span>{{{ timestamp }}}</span>
+      {{{body}}}
+    {{/posts}}
     <script src="/socket.io/socket.io.js"></script>
     <script>
       var socket = io.connect('/');
