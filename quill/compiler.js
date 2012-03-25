@@ -15,18 +15,25 @@ var cons   = require('consolidate')
  * @param Function callback Callback function
  */
 var copyAssets = function(themeDirectory, siteDirectory, callback) {
-  var themeAssets = path.join(themeDirectory, 'assets')
-    , siteAssets = path.join(siteDirectory, 'assets');
-
-  path.exists(themeAssets, function(exists) {
+  path.exists(themeDirectory, function(exists) {
     if(!exists) {
-      util.log("No assets directory found in " + themeDirectory);
-      return callback();
+      debugger
+      return callback(new Error("Error: Theme does not exist"));
     }
 
-    wrench.copyDirRecursive(themeAssets, siteAssets, function() {
-      util.log("Successfully copied assets");
-      callback();
+    var themeAssets = path.join(themeDirectory, 'assets')
+      , siteAssets = path.join(siteDirectory, 'assets');
+
+    path.exists(themeAssets, function(exists) {
+      if(!exists) {
+        util.log("No assets directory found in " + themeDirectory);
+        return callback();
+      }
+
+      wrench.copyDirRecursive(themeAssets, siteAssets, function() {
+        util.log("Successfully copied assets");
+        callback();
+      });
     });
   });
 };
@@ -97,7 +104,7 @@ var findPosts = function(postsDir, callback) {
   });
 };
 
-var generateHTMLFiles = function(files, layout, outputDir, callback) {
+var generateHTMLFiles = function(files, layout, outputDir, config, callback) {
   var counter = 0
     , compileCompleted
     , layoutHTML
@@ -121,7 +128,7 @@ var generateHTMLFiles = function(files, layout, outputDir, callback) {
         return callback(err);
       }
 
-      cons.whiskers(layout, { config: {}, content: data.toString() }, function(err, html) {
+      cons.whiskers(layout, { config: config, content: data.toString() }, function(err, html) {
         if(err) {
           return callback(err);
         }
@@ -138,7 +145,7 @@ var generateHTMLFiles = function(files, layout, outputDir, callback) {
   }
 };
 
-var compile = function(postsDir, themeDir, callback) {
+var compile = function(postsDir, themeDir, siteConfig, callback) {
   var counter = 0
     , files
     , siteDirectory = path.join(__dirname, '..', '_site')
@@ -155,12 +162,12 @@ var compile = function(postsDir, themeDir, callback) {
         return callback(err);
       }
 
-      copyAssets(themeDir, siteDirectory, function() {
+      copyAssets(themeDir, siteDirectory, function(err) {
         if(err) {
           return callback(err);
         }
 
-        generateHTMLFiles(files, layout, siteDirectory, function(err) {
+        generateHTMLFiles(files, layout, siteDirectory, siteConfig, function(err) {
           if(err) {
             return callback(err);
           }

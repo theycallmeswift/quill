@@ -1,4 +1,5 @@
-var compiler = require('./compiler')
+var colors = require('colors')
+  , compiler = require('./compiler')
   , config = require('../config.json')
   , http   = require('http')
   , path   = require('path')
@@ -20,7 +21,10 @@ var debugError = function(errorMessage, data){
 var themeDir = path.join(__dirname, '..', 'themes', config.theme);
 var postsDir = path.join(__dirname, '..', 'posts');
 
-compiler.compile(postsDir, themeDir, function() {
+compiler.compile(postsDir, themeDir, config, function(err) {
+  if(err) {
+    throw err;
+  }
 
   var filePath = path.join(__dirname, '..', '_site');
   var fileServer = new static.Server(filePath);
