@@ -7,6 +7,11 @@
 		<script src="http://timefield.googlecode.com/svn/trunk/timefield.js" type="text/javascript"></script>
 		<link href='assets/structure.css' rel='stylesheet' type='text/css'>
 		<link rel="shortcut icon" type="image/png" href="assets/favicon.png" />
+		<script type="text/javascript">
+		$(document).ready(function () {
+        $.timeField.init();
+		});
+		</script>
 		<style type="text/css">
 		html > body {
 			padding: 0px;
@@ -131,7 +136,7 @@
 				<ol id="posts">
     			{{#posts}}
 					<li>
-						<h3 class="title">{{ title }} <small>{{ timestamp }}</small></h3>
+						<h3 class="title">{{ title }} <small class="timefield t:{{ timestamp }}"></small></h3>
 						{{{ body }}}
 					</li>
     			{{/posts}}

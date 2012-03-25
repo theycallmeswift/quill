@@ -5,7 +5,13 @@
 		<link href='assets/structure.css' rel='stylesheet' type='text/css'>
 		<link rel="shortcut icon" type="image/png" href="assets/favicon.png" />
 		<link href='http://fonts.googleapis.com/css?family=Open+Sans:400italic,400,700' rel='stylesheet' type='text/css'>
-
+		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+		<script src="http://timefield.googlecode.com/svn/trunk/timefield.js" type="text/javascript"></script>
+		<script type="text/javascript">
+		$(document).ready(function () {
+        $.timeField.init();
+		});
+		</script>
 		<style type="text/css">
 		body {
 			background-color: #58523E;
@@ -151,7 +157,7 @@
 				<ol id="posts">
     			{{#posts}}
 					<li>
-						<h4 class="title">{{{ title }}} <small>{{{ timestamp }}}</small></h4>
+						<h4 class="title">{{{ title }}} <small class="timefield t:{{ timestamp }}"></small></h4>
 						{{{ body }}}
 					</li>
     			{{/posts}}
