@@ -1,7 +1,9 @@
 #!/usr/bin/env node
 var argv = process.argv.slice(2)
   , fs   = require("fs")
-  , fd   = require("path");
+  , fd   = require("path")
+  , util = require('util')
+  , wrench = require('wrench');
 
 var expandPath = function(path, dir){
   if (fd.basename(path) == path) {
@@ -12,6 +14,12 @@ var expandPath = function(path, dir){
 
 var dasherize = function(str){
   return str.trim(str).toLowerCase().replace(/[_\s]+/g, '-').replace(/([A-Z])/g, '-$1').replace(/-+/g, '-');
+};
+
+var copyFile = function(source, target) {
+  var is = fs.createReadStream(source);
+  var os = fs.createWriteStream(target);
+  util.pump(is, os);
 };
 
 var help = [
@@ -26,9 +34,53 @@ var help = [
 
 var generators = {};
 
+generators['new'] = function() {
+  var path     = fd.normalize(argv[1]);
+
+  // Create parent dir
+  if (fd.existsSync(path)) throw(path + " already exists");
+  fs.mkdirSync(path, 0775);
+
+  var baseDir = __dirname + '/../'
+    , sourceDir
+    , targetDir;
+
+  sourceDir = expandPath('themes', baseDir);
+  targetDir = expandPath('themes', path + "/");
+
+  wrench.copyDirRecursive(sourceDir, targetDir, function(err) {
+    if (err) throw(err);
+
+    sourceDir = expandPath('quill', baseDir);
+    targetDir = expandPath('quill', path + "/");
+
+    wrench.copyDirRecursive(sourceDir, targetDir, function(err) {
+      if (err) throw(err);
+
+      fs.mkdirSync(expandPath('posts', path + '/'), 0775);
+
+      sourceDir = expandPath('quill.js', baseDir);
+      targetDir = expandPath('quill.js', path + "/");
+
+      copyFile(sourceDir, targetDir);
+
+      sourceDir = expandPath('package.json', baseDir);
+      targetDir = expandPath('package.json', path + "/");
+
+      copyFile(sourceDir, targetDir);
+
+      sourceDir = expandPath('config.json', baseDir);
+      targetDir = expandPath('config.json', path + "/");
+
+      copyFile(sourceDir, targetDir);
+
+    });
+  });
+}
+
 generators.post = function() {
   var timestamp = Math.round(new Date().getTime() / 1000)
-  var template = __dirname + "/../posts/";
+  var template = process.cwd() + "/posts/";
   var filename = timestamp + "-" + dasherize(argv[1]) + ".md";
   var fullpath = expandPath(filename, template);
 
