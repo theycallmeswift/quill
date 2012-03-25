@@ -1,6 +1,6 @@
 {
   "development": true,
-  "theme": "obviovs",
+  "theme": "bootstrap",
   "name": "Quill",
   "description": "Stop blogging and start quillin.",
   "blogroll": [
