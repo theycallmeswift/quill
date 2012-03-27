@@ -163,7 +163,7 @@ var findPosts = function(postsDir, callback) {
             name:      filename,
             path:      filePath,
             timestamp: time * 1000,
-            url:       title.toLowerCase() + '.html'
+            url:       title.toLowerCase()
           });
 
           fileCallback();
@@ -223,14 +223,18 @@ var generateHTMLFiles = function(files, layout, outputDir, config, callback) {
       indexPosts.push(file);
 
       layoutHTML = compiledTemplate({ config: config, posts: pagePosts });
+			
+			var outputFileDir = path.join(outputDir, file.url);
 
-      outputFilename = path.join(outputDir, file.url);
-      var fileRes = fs.writeFile(outputFilename, layoutHTML, function(err) {
-        if(err) {
-          return callback(err);
-        }
-        compileCompleted();
-      });
+			fs.mkdir(outputFileDir, function() {
+				outputFilename = path.join(outputFileDir, 'index.html');
+				var fileRes = fs.writeFile(outputFilename, layoutHTML, function(err) {
+				  if(err) {
+				    return callback(err);
+				  }
+				  compileCompleted();
+				});
+			});
     }
 
     var sortByTimestamp = function(a, b) {
