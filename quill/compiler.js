@@ -94,6 +94,38 @@ var createSiteDirectory = function(directory, callback) {
 };
 
 /**
+  * createPostDirectory
+  *
+  * Creates the directory where each post's index.html will exist. Removes any
+  * existing directory beforehand.
+  *
+  * @param String directory Directory where the static site will be stored
+  * @param HTML output for post
+  * @param Function callback Callback function
+  */
+var createPostDirectory = function(directory, layoutHTML, callback) {
+	var outputFilename;
+	
+  path.exists(directory, function(exists) {
+    if(exists) {
+      wrench.rmdirSyncRecursive(directory);
+    }
+
+    fs.mkdir(directory, function() {
+      outputFilename = path.join(directory, 'index.html');
+      
+      fs.writeFile(outputFilename, layoutHTML, function(err) {
+        if(err) {
+          return callback(err);
+        }
+        callback();
+      });
+      
+    });
+  });
+};
+
+/**
  * findPosts
  *
  * Locate all the generated post markdown files inside the posts directory.
@@ -226,15 +258,7 @@ var generateHTMLFiles = function(files, layout, outputDir, config, callback) {
 			
 			var outputFileDir = path.join(outputDir, file.url);
 
-			fs.mkdir(outputFileDir, function() {
-				outputFilename = path.join(outputFileDir, 'index.html');
-				var fileRes = fs.writeFile(outputFilename, layoutHTML, function(err) {
-				  if(err) {
-				    return callback(err);
-				  }
-				  compileCompleted();
-				});
-			});
+			createPostDirectory(outputFileDir, layoutHTML, compileCompleted);
     }
 
     var sortByTimestamp = function(a, b) {
