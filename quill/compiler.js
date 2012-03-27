@@ -108,12 +108,10 @@ var createPostDirectory = function(directory, layoutHTML, callback) {
 	
   path.exists(directory, function(exists) {
     if(exists) {
-      util.log("Removing directory: " + directory);
       wrench.rmdirSyncRecursive(directory);
     }
 
     fs.mkdir(directory, function() {
-      util.log("Successfully created directory: " + directory);
       outputFilename = path.join(directory, 'index.html');
       
       fs.writeFile(outputFilename, layoutHTML, function(err) {
