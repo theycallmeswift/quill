@@ -225,7 +225,7 @@ var generateHTMLFiles = function(files, layout, outputDir, config, callback) {
       layoutHTML = compiledTemplate({ config: config, posts: pagePosts });
 			
 			var outputFileDir = path.join(outputDir, file.url);
-			console.log('Output File Dir:', outputFileDir);
+
 			fs.mkdir(outputFileDir, function() {
 				outputFilename = path.join(outputFileDir, 'index.html');
 				var fileRes = fs.writeFile(outputFilename, layoutHTML, function(err) {
