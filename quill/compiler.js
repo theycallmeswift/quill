@@ -49,12 +49,12 @@ var copyAssets = function(themeDirectory, siteDirectory, callback) {
     });
   };
 
-  path.exists(themeDirectory, function(exists) {
+  fs.exists(themeDirectory, function(exists) {
     if(!exists) {
       return callback(new Error("Error: Theme does not exist"));
     }
 
-    path.exists(themeAssets, function(exists) {
+    fs.exists(themeAssets, function(exists) {
       if(!exists) {
         util.log("No assets directory found in " + themeDirectory);
         fs.mkdir(siteAssets, function() {
@@ -80,7 +80,7 @@ var copyAssets = function(themeDirectory, siteDirectory, callback) {
   * @param Function callback Callback function
   */
 var createSiteDirectory = function(directory, callback) {
-  path.exists(directory, function(exists) {
+  fs.exists(directory, function(exists) {
     if(exists) {
       util.log("Removing directory: " + directory);
       wrench.rmdirSyncRecursive(directory);
@@ -106,7 +106,7 @@ var createSiteDirectory = function(directory, callback) {
 var createPostDirectory = function(directory, layoutHTML, callback) {
 	var outputFilename;
 	
-  path.exists(directory, function(exists) {
+  fs.exists(directory, function(exists) {
     if(exists) {
       wrench.rmdirSyncRecursive(directory);
     }
