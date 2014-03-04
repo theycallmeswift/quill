@@ -2,7 +2,6 @@
 var argv = process.argv.slice(2)
   , fs   = require("fs")
   , fd   = require("path")
-  , util = require('util')
   , wrench = require('wrench');
 
 var expandPath = function(path, dir){
@@ -19,7 +18,7 @@ var dasherize = function(str){
 var copyFile = function(source, target) {
   var is = fs.createReadStream(source);
   var os = fs.createWriteStream(target);
-  util.pump(is, os);
+  is.pipe(os);
 };
 
 var help = [
@@ -38,7 +37,7 @@ generators['new'] = function() {
   var path     = fd.normalize(argv[1]);
 
   // Create parent dir
-  if (fd.existsSync(path)) throw(path + " already exists");
+  if (fs.existsSync(path)) throw(path + " already exists");
   fs.mkdirSync(path, 0775);
 
   var baseDir = __dirname + '/../'
